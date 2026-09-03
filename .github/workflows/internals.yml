@@ -1,0 +1,27 @@
+name: onlywaves-internals
+on:
+  schedule:
+    - cron: '15,30,45 14 * * 1-5'
+    - cron: '0,15,30 15 * * 1-5'
+    - cron: '50 19 * * 1-5'
+    - cron: '5 20 * * 1-5'
+  workflow_dispatch: {}
+
+jobs:
+  bridge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -q "ibind[oauth]"
+      - run: python puente_internals.py
+        env:
+          IBKR_CONSUMER_KEY:        ${{ secrets.IBKR_CONSUMER_KEY }}
+          IBKR_ACCESS_TOKEN:        ${{ secrets.IBKR_ACCESS_TOKEN }}
+          IBKR_ACCESS_TOKEN_SECRET: ${{ secrets.IBKR_ACCESS_TOKEN_SECRET }}
+          IBKR_SIGNATURE_KEY_PEM:   ${{ secrets.IBKR_SIGNATURE_KEY_PEM }}
+          IBKR_ENCRYPTION_KEY_PEM:  ${{ secrets.IBKR_ENCRYPTION_KEY_PEM }}
+          IBKR_DH_PRIME:            ${{ secrets.IBKR_DH_PRIME }}
+          INTERNALS_TOKEN:          ${{ secrets.INTERNALS_TOKEN }}
