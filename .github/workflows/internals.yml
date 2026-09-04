@@ -25,3 +25,4 @@ jobs:
           IBKR_ENCRYPTION_KEY_PEM:  ${{ secrets.IBKR_ENCRYPTION_KEY_PEM }}
           IBKR_DH_PRIME:            ${{ secrets.IBKR_DH_PRIME }}
           INTERNALS_TOKEN:          ${{ secrets.INTERNALS_TOKEN }}
+# re-registro de schedules
