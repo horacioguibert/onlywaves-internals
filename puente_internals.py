@@ -7,7 +7,7 @@ dentro de las ventanas operativas y los empuja a POST /internals del Worker.
 
 Diseñado para GitHub Actions (cron cada 15 min dentro de las ventanas):
 cada invocación corre hasta el fin de la ventana o 14 min, lo que llegue antes.
-Ventanas (hora AR = UTC-3 fija): 11:15–12:45 y 16:50–17:10.
+Ventana continua (hora AR = UTC-3 fija): 10:30–17:00 · rueda completa.
 
 Secrets requeridos (GitHub → Settings → Secrets and variables → Actions):
   IBKR_CONSUMER_KEY, IBKR_ACCESS_TOKEN, IBKR_ACCESS_TOKEN_SECRET,
@@ -26,13 +26,13 @@ MAX_RUN_S = 14 * 60
 def now_utc(): return dt.datetime.now(dt.timezone.utc)
 
 def in_window(t=None):
-    """Ventanas en UTC (AR+3): 14:15–15:45 y 19:50–20:10, lun-vie."""
+    """Ventana en UTC (AR+3): 13:30–20:00, lun-vie."""
     t = t or now_utc()
     if t.weekday() > 4: return None
     hm = t.hour * 60 + t.minute
-    for a, b in ((14*60+15, 15*60+45), (19*60+50, 20*60+10)):
-        if a <= hm < b:
-            return t.replace(hour=b//60, minute=b%60, second=0, microsecond=0)
+    a, b = 13*60+30, 20*60          # rueda completa: 9:30–16:00 ET (EDT) = 10:30–17:00 AR
+    if a <= hm < b:
+        return t.replace(hour=b//60, minute=b%60, second=0, microsecond=0)
     return None
 
 def write_pem(env_name, fname):
